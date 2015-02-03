@@ -8,9 +8,13 @@ MatrixReader::MatrixReader(const char* name){
 	fscanf(file, "%s %s", strN, strM);
 	n = atoi(strN);
 	m = atoi(strM);
+	imat = new NMmatrix(n,m);
+	ivec = new Nvector(n);
 }
 
 MatrixReader::~MatrixReader(){
+	delete imat;
+	delete ivec;
 	fclose(file);
 }
 
@@ -23,18 +27,28 @@ int MatrixReader::getM(){
 }
 
 void MatrixReader::readMatrix(NMmatrix& mat){
+	static bool matrixRead = 0;
 	char value[20];
-	for(int i = 0; i < m; i++)
-		for(int j = 0; j < n; j++){
-			fscanf(file, "%s", value);
-			mat.set(j, i, atof(value));
-		}
+	if(matrixRead == 0){
+		for(int i = 0; i < m; i++)
+			for(int j = 0; j < n; j++){
+				fscanf(file, "%s", value);
+				imat->set(j, i, atof(value));
+			}
+		matrixRead = 1;
+	}
+	mat.copy(*imat);
 }
 
 void MatrixReader::readVector(Nvector& vec){
+	static bool vectorRead = 0;
 	char value[20];
-	for(int i = 0; i < n; i++){
-		fscanf(file, "%s", value);
-		vec.set(i, atof(value));
+	if(vectorRead == 0){
+		for(int i = 0; i < n; i++){
+			fscanf(file, "%s", value);
+			ivec->set(i, atof(value));
+		}
+		vectorRead = 1;
 	}
+	vec.copy(*ivec);
 }

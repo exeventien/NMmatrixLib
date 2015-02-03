@@ -25,7 +25,7 @@ Generator::~Generator(){
 Nvector* Generator::generateRow(){
 	Nvector* temp = new Nvector(n);
 	for(int i = 0; i < n; i++)
-		temp->set(i, (double)((rand()%10000)/100.00 * (rand()%2 ? 1.0 : -1.0))); 	
+		temp->set(i, (double)((rand()%10000)/100.00 * (rand()%2 ? 1.0 : -1.0)));	
 	return temp;
 }
 
@@ -50,7 +50,7 @@ void Generator::printFile(const char* path){
 	rows[m] = generateRow();  // vector b appended to the end of the file
 	for(int i = 0; i < m+1; i++){
 		for(int j = 0; j < n; j++){
-			fprintf(file, "%f ", rows[j]->get(i));
+			fprintf(file, "%f ", rows[i]->get(j));
 		}
 		fprintf(file, "\n");
 	}

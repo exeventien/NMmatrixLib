@@ -6,6 +6,8 @@
 #define MATRIX_READER
 class MatrixReader{
 	private:
+	NMmatrix* imat;
+	Nvector* ivec;
 	FILE* file;
 	int n, m;	
 	

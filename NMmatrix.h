@@ -19,6 +19,7 @@ public:
 	void getRow(int, Nvector&);
 
 	void set(int, int, double);
+	void copy(const NMmatrix&);
 	void print() const;
 };
 #endif

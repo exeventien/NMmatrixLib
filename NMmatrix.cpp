@@ -82,6 +82,14 @@ void NMmatrix::set(int nElement, int mElement, double value){
 	mat[(mElement*n)+nElement] = value;
 }
 
+void NMmatrix::copy(const NMmatrix& copy){
+        n = copy.n;
+        m = copy.m;
+	delete[] mat;
+        mat = new double[n*m];
+        memcpy(mat, copy.mat, sizeof(double)*n*m);
+}
+
 void NMmatrix::print() const{
 	for(int i = 0; i < m; i++){
 		printf("\n[");
