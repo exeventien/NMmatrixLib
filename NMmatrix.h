@@ -14,9 +14,10 @@ public:
 	void diagonalInverse();
 	void diagonalRemainder();
 
-	void inverseDiagonalBelow();
+	void diagonalBelow();
 	void aboveDiagonal();
 	void getRow(int, Nvector&);
+	double get(int, int) const;
 
 	void set(int, int, double);
 	void copy(const NMmatrix&);

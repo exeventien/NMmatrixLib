@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <cstdio>
 #include <cmath>
 #include <ctime>
 #include <Nvector.h>
@@ -29,23 +30,20 @@ void MatrixMethods::jacobiMethod(const NMmatrix& mat, const Nvector& b, Nvector&
 
 
 void MatrixMethods::gaussSeidelMethod(const NMmatrix& mat, const Nvector& b, Nvector& x1){
-	NMmatrix l(mat), u(mat);
-	l.inverseDiagonalBelow();
-	l.print();
-	u.aboveDiagonal();
-	u.print();
 	Nvector x0(b.getSize());
-	randomizeVector(x1);
+	randomizeVector(x0);
+	NMmatrix uMat(mat), lMat(mat);
+	uMat.aboveDiagonal();
+	lMat.diagonalBelow();
 	int row = 0;
 	while(!vectorsConverge(x1, x0)){
-		Nvector uRow(b.getSize()), lRow(b.getSize());
-		u.getRow(row, uRow);
-		l.getRow(row, lRow);
-		double ux0 = x0.dotProduct(uRow);
-		x0.set(row, (b.get(row) - ux0));
-		double lbux0 = x0.dotProduct(lRow);
-		x1.set(row, lbux0);
-		x0.set(row, lbux0);
+		Nvector currentRow(b.getSize()), nextRow(b.getSize());
+		uMat.getRow(row, currentRow);
+		lMat.getRow((row==b.getSize()-1) ? 0 : row+1, nextRow);
+		double k0 = x1.dotProduct(currentRow);
+		double k1 = x0.dotProduct(nextRow); 
+		x1.set(row, (b.get(row) - k1 - k0)/mat.get(row, row));
+		x1.print();
 		if(row == b.getSize())
 			row = 0;
 		else
