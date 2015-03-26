@@ -8,7 +8,7 @@
 static const char JACOBI[] = "1.) Jacobi Method";
 static const char GAUSS_SEIDEL[] = "2.) Gauss-Seidel Method";
 
-static const char GAUSSIAN_ELIMINATION = "4.) Gaussian Elimination";
+static const char GAUSSIAN_ELIMINATION[] = "4.) Gaussian Elimination";
 
 void options(int, MatrixReader&);
 

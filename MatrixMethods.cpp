@@ -53,34 +53,36 @@ void MatrixMethods::gaussSeidelMethod(const NMmatrix& mat, const Nvector& b, Nve
 }
 
 void MatrixMethods::gaussianEliminationMethod(const NMmatrix& mat, const Nvector& b, Nvector& x1){
-	Nvector b0(b);
+	x1.copy(b);
+	NMmatrix cmat(mat);
 	for(int diagonal = 0; diagonal < b.getSize(); diagonal++){
 		for(int colIndex = diagonal+1; colIndex < b.getSize(); colIndex++){
-			if(mat.get(colIndex, diagonal) != 0.0){
+			if(cmat.get(diagonal, colIndex) != 0.0){
 				Nvector opRow(b.getSize());
-				double scalar = mat.get(colIndex, diagonal)/mat.get(diagonal, diagonal);
-				mat.getRow(diagonal, opRow);
+				double scalar = cmat.get(diagonal, colIndex)/cmat.get(diagonal, diagonal);
+				cmat.getRow(diagonal, opRow);
 				opRow.scalarMultiply(scalar);
 				for(int j = 0; j < opRow.getSize(); j++){
-					mat.set(colIndex, j, mat.get(colIndex, j)-opRow.get(j));
+					cmat.set(j, colIndex, cmat.get(j, colIndex)-opRow.get(j));
 				}
-				mat.set(colIndex, diagonal, 0.0);
-				b0.set(colIndex, b0.get(colIndex)-(b0.get(diagonal)*scalar));
+				cmat.set(diagonal, colIndex, 0.0);
+				x1.set(colIndex, x1.get(colIndex)-(x1.get(diagonal)*scalar));
 			}
+			cmat.print();
 		}
 	}
-	for(int diagonal = b.getSize-1; diagonal >= 0; diagonal--){
+	cmat.print();
+	for(int diagonal = b.getSize()-1; diagonal >= 0; diagonal--){
 		for(int rowIndex = b.getSize()-1; rowIndex >= diagonal; rowIndex--){
 			if(rowIndex != diagonal){
-				b0.set(diagonal, b0.get(diagonal) + (mat.get(diagonal, rowIndex) * b0.get(rowIndex)));
+				x1.set(diagonal, x1.get(diagonal) - (cmat.get(rowIndex, diagonal) * x1.get(rowIndex)));
 			}
 			else{
-				b0.set(diagonal, b0.get(diagonal)/mat.get(diagonal, diagonal));
-				mat.set(diagonal, diagonal, 1.0);
+				x1.set(diagonal, x1.get(diagonal)/cmat.get(diagonal, diagonal));
+				cmat.set(diagonal, diagonal, 1.0);
 			}
 		}
 	}
-	x1.copy(b0);
 }
 
 void MatrixMethods::randomizeVector(Nvector& vec){
