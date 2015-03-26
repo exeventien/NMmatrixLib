@@ -12,6 +12,8 @@ class MatrixMethods{
 	static void jacobiMethod(const NMmatrix&, const Nvector&, Nvector&);
 	
 	static void gaussSeidelMethod(const NMmatrix&, const Nvector&, Nvector&);
+
+	static void gaussianEliminationMethod(const NMmatrix&, const Nvector&, Nvector&);
 };
 
 #endif
