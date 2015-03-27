@@ -59,18 +59,16 @@ void NMmatrix::diagonalRemainder(){
 void NMmatrix::diagonalBelow(){
 	for(int i = 0; i < m; i++)
 		for(int j = 0; j < n; j++){
-			if(j > i)
-				mat[(n*i)+j] = 0.0;
-			else 
-				mat[(n*i)+j] = mat[(n*i)+j];
+			if(j <= i)
+				mat[(n*j)+i] = 0.0;
 		}
 }
 
 void NMmatrix::aboveDiagonal(){
         for(int i = 0; i < m; i++)
                 for(int j = 0; j < n; j++)
-                        if(j <= i)
-                                mat[(n*i)+j] = 0.0;
+                        if(j > i)
+                                mat[(n*j)+i] = 0.0;
 }
 
 void NMmatrix::getRow(int row, Nvector& vec){
