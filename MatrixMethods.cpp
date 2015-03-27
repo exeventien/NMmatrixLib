@@ -71,7 +71,6 @@ void MatrixMethods::gaussianEliminationMethod(const NMmatrix& mat, const Nvector
 			cmat.print();
 		}
 	}
-	cmat.print();
 	for(int diagonal = b.getSize()-1; diagonal >= 0; diagonal--){
 		for(int rowIndex = b.getSize()-1; rowIndex >= diagonal; rowIndex--){
 			if(rowIndex != diagonal){
