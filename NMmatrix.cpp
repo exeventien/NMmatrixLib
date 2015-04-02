@@ -20,6 +20,14 @@ NMmatrix::~NMmatrix(){
 	delete[] mat;
 }
 
+int NMmatrix::getN() const{
+	return n;
+}
+
+int NMmatrix::getM() const{
+	return m;
+}
+
 void NMmatrix::vectorTransform(Nvector& vec){
 	Nvector temp(vec);
 	for(int i = 0; i < m; i++){

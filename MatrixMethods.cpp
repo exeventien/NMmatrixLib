@@ -84,6 +84,67 @@ void MatrixMethods::gaussianEliminationMethod(const NMmatrix& mat, const Nvector
 	}
 }
 
+void MatrixMethods::decompositionLUMethod(const NMmatrix& mat, const Nvector& b, Nvector& x1){
+	NMmatrix lMat(mat), uMat(mat);
+	initLUMatrices(lMat, uMat);
+
+	mat.print();
+	printf("\nL Matrix:\n");
+	lMat.print();
+	printf("\nU Matrix:\n");
+	uMat.print();
+	printf("\n");	
+
+	for(int diagonal = 1; diagonal < b.getSize(); diagonal++){
+		printf("L Column Operations\n");
+		for(int lRow = diagonal; lRow < b.getSize(); lRow++){
+                     double element = mat.get(diagonal, lRow);
+		     printf("%0.4f ", element);
+                     for(int i = 0; i < b.getSize(); i++)
+		     	if(i != diagonal){
+                            element -= (uMat.get(diagonal, i)*lMat.get(i, lRow));
+			    printf("- (%0.4f * %0.4f) ", uMat.get(diagonal, i), lMat.get(i, lRow));
+			}
+                     lMat.set(diagonal, lRow, element/uMat.get(diagonal, diagonal));
+		     printf("/%0.4f = %0.4f\n", uMat.get(diagonal, diagonal), element/uMat.get(diagonal, diagonal));
+                }
+                lMat.print();
+                printf("\n");
+
+		if(diagonal != b.getSize()-1){
+			printf("U Row Operations\n");
+			for(int uColumn = diagonal+1; uColumn < b.getSize(); uColumn++){
+                        	double element = mat.get(uColumn, diagonal);
+				printf("%0.4f ", element);
+                        	for(int i = 0; i < b.getSize(); i++)
+				    if(i != diagonal){
+                                	element -= (lMat.get(i, diagonal)*uMat.get(uColumn, i));
+					printf("- (%0.4f * %0.4f) ", lMat.get(i, diagonal), uMat.get(uColumn, i));	
+				    }
+                        	uMat.set(uColumn, diagonal, element/lMat.get(diagonal, diagonal));
+				printf("/%0.4f = %0.4f\n", lMat.get(diagonal, diagonal), element/lMat.get(diagonal, diagonal));
+			}
+               	 	uMat.print();
+               	        printf("\n");
+                }
+	}
+	NMmatrix test(mat.getN(), mat.getM());
+	for(int i = 0; i < test.getN(); i++){
+		for(int j = 0; j < test.getM(); j++){
+			double dot = 0;
+			for(int k = 0; k < test.getM(); k++)
+				dot += (lMat.get(k, i)*uMat.get(j, k));
+			test.set(j, i, dot);
+		}
+	}
+
+	printf("\nA Matrix:\n");
+	test.print();
+	printf("\n");
+
+	x1.copy(b);
+}
+
 void MatrixMethods::randomizeVector(Nvector& vec){
 	srand(time(0));
 	for(int i = 0; i < vec.getSize(); i++)
@@ -97,4 +158,23 @@ bool MatrixMethods::vectorsConverge(const Nvector& vec0, const Nvector& vec1){
 		if(fabs(vec0.get(i)-vec1.get(i)) > MARGIN_OF_ERROR)
 			return 0;
 	return 1;
+}
+
+void MatrixMethods::initLUMatrices(NMmatrix& lMat, NMmatrix& uMat){
+	if(uMat.getN() != lMat.getN() || uMat.getM() != lMat.getM())
+		return;
+
+	for(int i = 0; i < uMat.getN(); i++)
+		for(int j = 0; j < uMat.getM(); j++){
+			if(j == 0 && i != 0)	
+				lMat.set(i, j, 0.0);
+			if(i == 0)
+				uMat.set(i, j, 0.0);
+			if(j != 0 && i != 0){	
+				uMat.set(i, j, 0.0);
+				lMat.set(i, j, 0.0);
+			}
+			if(j == i)
+				uMat.set(i, j, 1.0);
+		}	
 }

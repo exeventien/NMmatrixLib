@@ -10,6 +10,9 @@ public:
 	NMmatrix(const NMmatrix&);
 	~NMmatrix();
 
+	int getN() const;
+	int getM() const;
+
 	void vectorTransform(Nvector&);
 	void diagonalInverse();
 	void diagonalRemainder();

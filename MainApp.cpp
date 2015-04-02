@@ -9,6 +9,7 @@ static const char JACOBI[] = "1.) Jacobi Method";
 static const char GAUSS_SEIDEL[] = "2.) Gauss-Seidel Method";
 
 static const char GAUSSIAN_ELIMINATION[] = "4.) Gaussian Elimination";
+static const char LU_DECOMPOSITION[] = "5.) LU-Decomposition";
 
 void options(int, MatrixReader&);
 
@@ -17,7 +18,7 @@ int main(int argv, const char** argc){
 		MatrixReader reader(argc[1]);
 		int option;
 		while(1){
-			printf("\n\nChoose a method to solve the matrix.\n%s\n%s\n%s\n\n>", JACOBI, GAUSS_SEIDEL, GAUSSIAN_ELIMINATION);
+			printf("\n\nChoose a method to solve the matrix.\n%s\n%s\n%s\n%s\n\n>", JACOBI, GAUSS_SEIDEL, GAUSSIAN_ELIMINATION, LU_DECOMPOSITION);
 			scanf("%i", &option);		
 			options(option, reader);
 		}
@@ -51,7 +52,8 @@ void options(int method, MatrixReader& reader){
 			x.print();
 			break;			
 		case 5:
-		
+			MatrixMethods::decompositionLUMethod(mat, vec, x);
+			x.print();
 			break;
 		default:
 			exit(0);
