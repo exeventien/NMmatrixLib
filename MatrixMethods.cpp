@@ -44,6 +44,21 @@ void MatrixMethods::gaussSeidelMethod(const NMmatrix& mat, const Nvector& b, Nve
 	}while(!vectorsConverge(x0, x1));
 }
 
+void MatrixMethods::SORmethod(const NMmatrix& mat, const Nvector& b, Nvector& x1){
+	Nvector x0(b.getSize());
+	randomizeVector(x1);
+	do{
+		x0.copy(x1);
+		for(int i = 0; i < b.getSize(); i++){
+			double dot = 0;
+			for(int j = 0; j < b.getSize(); j++)
+				if(j != i)
+					dot += mat.get(j, i)*x0.get(j);	
+			x1.set(i, (1.0 - relaxation)*x0.get(i) + ((relaxation/mat.get(i, i))*(b.get(i) - dot)));	
+		}			
+	}while(!vectorsConverge(x0, x1));
+}
+
 void MatrixMethods::gaussianEliminationMethod(const NMmatrix& mat, const Nvector& b, Nvector& x1){
 	x1.copy(b);
 	NMmatrix cmat(mat);
