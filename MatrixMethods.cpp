@@ -31,25 +31,17 @@ void MatrixMethods::jacobiMethod(const NMmatrix& mat, const Nvector& b, Nvector&
 
 void MatrixMethods::gaussSeidelMethod(const NMmatrix& mat, const Nvector& b, Nvector& x1){
 	Nvector x0(b.getSize());
-	randomizeVector(x0);
-	NMmatrix uMat(mat), lMat(mat);
-	uMat.aboveDiagonal();
-	lMat.diagonalBelow();
-	int row = 0;
-	while(!vectorsConverge(x1, x0)){
-		Nvector currentRow(b.getSize()), nextRow(b.getSize());
-		uMat.getRow(row, currentRow);
-		lMat.getRow((row==b.getSize()-1) ? 0 : row+1, nextRow);
-		double k0 = x1.dotProduct(currentRow);
-		double k1 = x0.dotProduct(nextRow); 
-		x1.set(row, (b.get(row) - k1 - k0)/mat.get(row, row));
-		x1.print();
-		if(row == b.getSize())
-			row = 0;
-		else
-			row++;
-	}
-
+	randomizeVector(x1);
+	do{
+		x0.copy(x1);
+		for(int i = 0; i < b.getSize(); i++){
+			double dot = 0;
+			for(int j = 0; j < b.getSize(); j++)
+				if(j != i)
+					dot += mat.get(j, i)*x0.get(j);					
+			x1.set(i, (b.get(i) - dot)/mat.get(i, i));
+		}
+	}while(!vectorsConverge(x0, x1));
 }
 
 void MatrixMethods::gaussianEliminationMethod(const NMmatrix& mat, const Nvector& b, Nvector& x1){
@@ -154,7 +146,7 @@ void MatrixMethods::decompositionLUMethod(const NMmatrix& mat, const Nvector& b,
 void MatrixMethods::randomizeVector(Nvector& vec){
 	srand(time(0));
 	for(int i = 0; i < vec.getSize(); i++)
-		vec.set(i, (double)(rand()%50));
+		vec.set(i, (double)(rand()%20));
 }
 
 bool MatrixMethods::vectorsConverge(const Nvector& vec0, const Nvector& vec1){
