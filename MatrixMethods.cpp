@@ -54,7 +54,7 @@ void MatrixMethods::SORmethod(const NMmatrix& mat, const Nvector& b, Nvector& x1
 			for(int j = 0; j < b.getSize(); j++)
 				if(j != i)
 					dot += mat.get(j, i)*x0.get(j);	
-			x1.set(i, (1.0 - relaxation)*x0.get(i) + ((relaxation/mat.get(i, i))*(b.get(i) - dot)));	
+			x1.set(i, x0.get(i) + relaxation*((b.get(i) - dot)/mat.get(i, i) - x0.get(i)));	
 		}			
 	}while(!vectorsConverge(x0, x1));
 }
@@ -167,10 +167,14 @@ void MatrixMethods::randomizeVector(Nvector& vec){
 bool MatrixMethods::vectorsConverge(const Nvector& vec0, const Nvector& vec1){
 	if(vec0.getSize() != vec1.getSize())
 		return 0;
+	double sum = 0;
 	for(int i = 0; i < vec0.getSize(); i++)
-		if(fabs(vec0.get(i)-vec1.get(i)) > MARGIN_OF_ERROR)
-			return 0;
-	return 1;
+		sum += (vec0.get(i)-vec1.get(i)) * (vec0.get(i)-vec1.get(i));
+
+
+	if(sqrt(sum) < MARGIN_OF_ERROR)
+			return 1;
+	return 0;
 }
 
 void MatrixMethods::initLUMatrices(NMmatrix& lMat, NMmatrix& uMat){
